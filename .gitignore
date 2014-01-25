@@ -14,5 +14,5 @@
 
 *.user
 
-build-dnt-5_2_0_mingw_rel_static-Release/
-build-dnt-Desktop_Qt_5_2_0_MinGW_32bit-Debug/
+build-DntEditor-5_2_0_mingw_rel_static-Release/
+build-DntEditor-Desktop_Qt_5_2_0_MinGW_32bit-Debug/

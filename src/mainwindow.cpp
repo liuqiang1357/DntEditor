@@ -666,7 +666,7 @@ void MainWindow::on_action_5_triggered()
 
 void MainWindow::on_action_6_triggered()
 {
-    QMessageBox::information(0,tr("关于"), tr("\n\"DNT查看编辑器v2.0\" -20130120\n"
+    QMessageBox::information(0,tr("关于"), tr("\n\"DntEditor v2.0\" -20130120\n"
                                             "---------------------\n"
                                             "Author:xiaot\tEmail:liuqiang1357@163.com\t\n"
                                             "Qt:5.0.2\t\tmingw:4.8.0\n"
