@@ -1,8 +1,3 @@
-DntEditor
-=========
-
-DntEditor by Qt 5
-
 DntEditor v2.0 -20130120
 ---------------------
 Author:xiaot	Email:liuqiang1357@163.com
