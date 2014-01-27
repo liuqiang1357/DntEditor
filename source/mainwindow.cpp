@@ -199,7 +199,7 @@ void MainWindow::pipeibiaoqian()
         qApp->processEvents ();
         for (int i=0;i<hangshu1;i++)
         {
-            if (i%100==0)
+            if (i%500==0)
             {
                 if (stopflag)
                 {
