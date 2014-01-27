@@ -69,6 +69,8 @@ public:
 
     void clear();
 
+    bool jiazaixml();
+
 private slots:
 
     void on_pushButton_clicked();

@@ -120,11 +120,47 @@ void Shujuti::dushujuti(QDataStream &input,Biaotou &biaotou,Liexinxi &liexinxi,U
     ui->statusBar->showMessage(QObject::tr("载入文件成功."),10000);
 }
 
+bool MainWindow::jiazaixml()
+{
+    statusBar()->showMessage(tr("正在加载XML文件."),5000);
+    qApp->processEvents ();
+
+    programDir=qApp->arguments().value(0);
+    QString xmlFileName=QFileInfo(programDir).absolutePath()+"/uistring.xml";
+    QFile xmlFile(xmlFileName);
+    if (!xmlFile.open(QIODevice::ReadOnly)){
+        statusBar()->showMessage(tr("XML文件载入失败."),5000);
+        jiazai=false;
+        return false;
+    }
+    dom = new QDomDocument();
+    QString errorStr;
+    int errorLine;
+    int errorColumn;
+    if(!dom->setContent(&xmlFile,&errorStr,&errorLine,&errorColumn)){
+        xmlFile.close();
+        jiazai=false;
+        statusBar()->showMessage(tr("XML文件载入失败."),5000);
+        return false;
+    }
+    QDomNodeList messagelist=dom->elementsByTagName("message");
+    for(int i=0;i<messagelist.count();i++)
+    {
+        suoyin.append(messagelist.at(i).toElement().attribute("mid").toInt());
+
+    }
+    xmlFile.close();
+
+    jiazai=true;
+    statusBar()->showMessage(tr("XML文件载入成功."),3000);
+    return true;
+}
+
+
 void MainWindow::pipeibiaoqian()
 {
     int _NameID=0;
     int _NameIDParam=0;
-    QDomNodeList messagelist=dom->elementsByTagName("message");
 
     QTableWidget*tableWidget1=ui->tableWidget;
     int lieshu1=tableWidget1->columnCount();;
@@ -150,6 +186,14 @@ void MainWindow::pipeibiaoqian()
 
     if (_NameID!=0)
     {
+        if (!jiazai)
+        {
+            if(!jiazaixml())
+            {
+                return;
+            }
+        }
+        QDomNodeList messagelist=dom->elementsByTagName("message");
         statusBar()->showMessage(tr("正在匹配标签."),10000);
         for (int i=0;i<hangshu1;i++)
         {
@@ -338,40 +382,8 @@ MainWindow::MainWindow(QWidget *parent) :
     statusBar()->addPermanentWidget(label1);
     suoyin.clear();
     yunxing=false;
-
-    programDir=qApp->arguments().value(0);
-
-    QString xmlFileName=QFileInfo(programDir).absolutePath()+"/uistring.xml";
-
-    QFile xmlFile(xmlFileName);
-    if (!xmlFile.open(QIODevice::ReadOnly)){
-        statusBar()->showMessage(tr("XML文件载入失败."),5000);
-        jiazai=false;
-        return;
-    }
-    dom = new QDomDocument();
-    QString errorStr;
-    int errorLine;
-    int errorColumn;
-    if(!dom->setContent(&xmlFile,&errorStr,&errorLine,&errorColumn)){
-        xmlFile.close();
-        jiazai=false;
-        statusBar()->showMessage(tr("XML文件载入失败."),5000);
-        return;
-    }
-
-    QDomNodeList messagelist=dom->elementsByTagName("message");
-    for(int i=0;i<messagelist.count();i++)
-    {
-        suoyin.append(messagelist.at(i).toElement().attribute("mid").toInt());
-
-    }
-    xmlFile.close();
-
-    jiazai=true;
-    statusBar()->showMessage(tr("XML文件载入成功."),3000);
-
-
+    jiazai =false;
+    stopflag=false;
 
     if (qApp->arguments().value(1)!="")
     {
@@ -385,6 +397,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
 }
+
 void MainWindow::clear()
 {
     ui->tableWidget->clear();
@@ -436,10 +449,7 @@ void MainWindow::on_pushButton_clicked()
     label1->setText(filename+tr("     ")+QString::number(biaotou.hangshu)+tr("x")+QString::number(biaotou.lieshu)+tr("   "));
     this->liexinxi.duliexinxi(input,this->biaotou,this->ui);
     this->shujuti.dushujuti(input,this->biaotou,this->liexinxi,this->ui,stopflag);
-    if (jiazai)
-    {
-        this->pipeibiaoqian();
-    }
+    this->pipeibiaoqian();
     ui->tableWidget->resizeColumnsToContents();
     fileNameOpened.close();
     yunxing= false;
