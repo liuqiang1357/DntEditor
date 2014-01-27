@@ -117,7 +117,6 @@ void Shujuti::dushujuti(QDataStream &input,Biaotou &biaotou,Liexinxi &liexinxi,U
             }
         }
     }
-    ui->tableWidget->resizeColumnsToContents();
     ui->statusBar->showMessage(QObject::tr("载入文件成功."),10000);
 }
 
@@ -199,7 +198,7 @@ void MainWindow::pipeibiaoqian()
         qApp->processEvents ();
         for (int i=0;i<hangshu1;i++)
         {
-            if (i%500==0)
+            if (i%1000==0)
             {
                 if (stopflag)
                 {
@@ -251,6 +250,10 @@ void MainWindow::pipeibiaoqian()
         }
         ui->tableWidget->resizeColumnsToContents();
         statusBar()->showMessage(tr("匹配标签成功."),10000);
+    }
+    else
+    {
+        ui->tableWidget->resizeColumnsToContents();
     }
 }
 
