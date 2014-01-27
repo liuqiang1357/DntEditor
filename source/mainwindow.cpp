@@ -56,7 +56,7 @@ void Shujuti::dushujuti(QDataStream &input,Biaotou &biaotou,Liexinxi &liexinxi,U
             ui->tableWidget->resizeColumnsToContents();
             qApp->processEvents ();
         }
-        else if (i%1000==0)
+        else if ((i+1)%1000==0)
         {
             ui->statusBar->showMessage(QObject::tr("正在载入文件 ")+QString::number(int(double(i)*100/double(hangshu1)))+"%",600000);
             if (stopflag)
@@ -198,13 +198,7 @@ void MainWindow::pipeibiaoqian()
         statusBar()->showMessage(tr("正在匹配标签."),10000);
         for (int i=0;i<hangshu1;i++)
         {
-
-            if (i==30)
-            {
-                ui->tableWidget->resizeColumnsToContents();
-                qApp->processEvents ();
-            }
-            else if (i%500==0)
+            if (i%500==0)
             {
                 if (stopflag)
                 {
