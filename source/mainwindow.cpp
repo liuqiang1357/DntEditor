@@ -117,6 +117,7 @@ void Shujuti::dushujuti(QDataStream &input,Biaotou &biaotou,Liexinxi &liexinxi,U
             }
         }
     }
+    ui->tableWidget->resizeColumnsToContents();
     ui->statusBar->showMessage(QObject::tr("载入文件成功."),10000);
 }
 
@@ -253,6 +254,7 @@ void MainWindow::pipeibiaoqian()
                 }
             }
         }
+        ui->tableWidget->resizeColumnsToContents();
         statusBar()->showMessage(tr("匹配标签成功."),10000);
     }
 }
@@ -450,7 +452,6 @@ void MainWindow::on_pushButton_clicked()
     this->liexinxi.duliexinxi(input,this->biaotou,this->ui);
     this->shujuti.dushujuti(input,this->biaotou,this->liexinxi,this->ui,stopflag);
     this->pipeibiaoqian();
-    ui->tableWidget->resizeColumnsToContents();
     fileNameOpened.close();
     yunxing= false;
 }
