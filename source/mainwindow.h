@@ -108,6 +108,8 @@ private:
 
     QString fileNameSavedDir;
 
+    QString programDir;
+
     class Biaotou biaotou;
 
     class Liexinxi liexinxi;
@@ -125,6 +127,8 @@ private:
     bool yunxing;
 
     bool jiazai;
+
+    bool opened;
 };
 
 #endif // MAINWINDOW_H

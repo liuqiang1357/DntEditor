@@ -339,7 +339,10 @@ MainWindow::MainWindow(QWidget *parent) :
     suoyin.clear();
     yunxing=false;
 
-    QString xmlFileName=QString("uistring.xml");
+    programDir=qApp->arguments().value(0);
+
+    QString xmlFileName=QFileInfo(programDir).absolutePath()+"/uistring.xml";
+
     QFile xmlFile(xmlFileName);
     if (!xmlFile.open(QIODevice::ReadOnly)){
         statusBar()->showMessage(tr("XML文件载入失败."),5000);
@@ -368,6 +371,19 @@ MainWindow::MainWindow(QWidget *parent) :
     jiazai=true;
     statusBar()->showMessage(tr("XML文件载入成功."),3000);
 
+
+
+    if (qApp->arguments().value(1)!="")
+    {
+        opened=false;
+        this->show();
+        on_pushButton_clicked();
+    }
+    else
+    {
+        opened=true;
+    }
+
 }
 void MainWindow::clear()
 {
@@ -392,9 +408,16 @@ void MainWindow::on_pushButton_clicked()
     {
         yunxing= true;
     }
-
-    QString dir=QFileInfo(fileNameOpenedDir).absolutePath();
-    fileNameOpenedDir = QFileDialog::getOpenFileName(this,"",dir,"Dnt Files(*.dnt)");
+    if (opened)
+    {
+        QString dir=QFileInfo(fileNameOpenedDir).absolutePath();
+        fileNameOpenedDir = QFileDialog::getOpenFileName(this,"",dir,"Dnt Files(*.dnt)");
+    }
+    else
+    {
+        fileNameOpenedDir=qApp->arguments().value(1);
+        opened=false;
+    }
     QFile fileNameOpened (fileNameOpenedDir);
     QString filename=QFileInfo(fileNameOpenedDir).fileName();
     if (!fileNameOpened.open(QIODevice::ReadOnly)){
