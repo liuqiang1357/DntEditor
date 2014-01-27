@@ -196,9 +196,10 @@ void MainWindow::pipeibiaoqian()
         }
         QDomNodeList messagelist=dom->elementsByTagName("message");
         statusBar()->showMessage(tr("正在匹配标签."),10000);
+        qApp->processEvents ();
         for (int i=0;i<hangshu1;i++)
         {
-            if (i%500==0)
+            if (i%100==0)
             {
                 if (stopflag)
                 {
