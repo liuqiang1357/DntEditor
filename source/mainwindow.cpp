@@ -416,7 +416,7 @@ void MainWindow::on_pushButton_clicked()
     else
     {
         fileNameOpenedDir=qApp->arguments().value(1);
-        opened=false;
+        opened=true;
     }
     QFile fileNameOpened (fileNameOpenedDir);
     QString filename=QFileInfo(fileNameOpenedDir).fileName();
