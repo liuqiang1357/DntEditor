@@ -1,7 +1,7 @@
-DntEditor v2.0 -20130120
+DntEditor v3.0 -20140212
 ---------------------
 Author:xiaot	Email:liuqiang1357@163.com
-Qt:5.0.2	mingw:4.8.0
+Qt:5.2.0	mingw:4.8.0
 on Microsoft Windows 7 (32-bit)
 
 ÏîÄ¿Ö÷Ò³£ºhttps://github.com/liuqiang1357/DntEditor

@@ -708,10 +708,10 @@ void MainWindow::on_action_5_triggered()
 
 void MainWindow::on_action_6_triggered()
 {
-    QMessageBox::information(0,tr("关于"), tr("\n\"DntEditor v2.0\" -20130120\n"
+    QMessageBox::information(0,tr("关于"), tr("\n\"DntEditor v3.0\" -20140212\n"
                                             "---------------------\n"
                                             "Author:xiaot\tEmail:liuqiang1357@163.com\t\n"
-                                            "Qt:5.0.2\t\tmingw:4.8.0\n"
+                                            "Qt:5.2.0\t\tmingw:4.8.0\n"
                                             "on Microsoft Windows 7 (32-bit)\n"));
 }
 
