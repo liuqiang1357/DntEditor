@@ -378,6 +378,26 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+
+    cmenu = new QMenu(this->ui->tableWidget);
+
+    connect(ui->tableWidget,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(show_contextmenu()));
+
+    QAction *action_edit= cmenu->addAction(tr("编辑"));
+    cmenu->addSeparator();
+    QAction *action_addrow=cmenu->addAction(tr("添加行"));
+    QAction *action_deleterow= cmenu->addAction(tr("删除行"));
+    cmenu->addSeparator();
+    QAction *action_addcolumn= cmenu->addAction(tr("添加列"));
+    QAction *action_deletecolumn= cmenu->addAction(tr("删除列"));
+
+    connect(action_edit,SIGNAL(triggered(bool)),this,SLOT(on_action_edit_triggered()));
+    connect(action_addrow,SIGNAL(triggered(bool)),this,SLOT(on_action_addrow_triggered()));
+    connect(action_deleterow,SIGNAL(triggered(bool)),this,SLOT(on_action_deleterow_triggered()));
+    connect(action_addcolumn,SIGNAL(triggered(bool)),this,SLOT(on_action_addcolumn_triggered()));
+    connect(action_deletecolumn,SIGNAL(triggered(bool)),this,SLOT(on_action_deletecolumn_triggered()));
+
     label1 = new QLabel;
     statusBar()->addPermanentWidget(label1);
     suoyin.clear();
@@ -524,6 +544,11 @@ void MainWindow::on_pushButton_2_clicked()
     }
 }
 
+void MainWindow::on_lineEdit_returnPressed()
+{
+    on_pushButton_2_clicked();
+}
+
 void MainWindow::on_pushButton_3_clicked()
 {
     fileNameSavedDir=fileNameOpenedDir;
@@ -661,21 +686,6 @@ void MainWindow::on_pushButton_6_clicked()
 
 }
 
-void MainWindow::on_pushButton_7_clicked()
-{
-    QString filename=QFileInfo(fileNameOpenedDir).fileName();
-    ui->tableWidget->setRowCount(ui->tableWidget->rowCount()+1);
-    biaotou.hangshu=ui->tableWidget->rowCount();
-    label1->setText(filename+tr("     ")+QString::number(biaotou.hangshu)+tr("x")+QString::number(biaotou.lieshu)+tr("   "));
-}
-void MainWindow::on_pushButton_8_clicked()
-{
-    QString filename=QFileInfo(fileNameOpenedDir).fileName();
-    ui->tableWidget->removeRow(ui->tableWidget->currentRow());
-    biaotou.hangshu=ui->tableWidget->rowCount();
-    label1->setText(filename+tr("     ")+QString::number(biaotou.hangshu)+tr("x")+QString::number(biaotou.lieshu)+tr("   "));
-}
-
 void MainWindow::on_action_triggered()
 {
     on_pushButton_clicked();
@@ -705,8 +715,201 @@ void MainWindow::on_action_6_triggered()
                                             "on Microsoft Windows 7 (32-bit)\n"));
 }
 
-
-void MainWindow::on_lineEdit_returnPressed()
+void MainWindow::show_contextmenu()
 {
-    on_pushButton_2_clicked();
+    if(cmenu)
+     {
+         cmenu->exec(QCursor::pos());
+     }
 }
+
+void MainWindow::on_action_edit_triggered()
+{
+    if (ui->tableWidget->columnCount()==0)
+        return;
+
+    bool isOK;
+    QString input=QInputDialog::getText(NULL,tr("编辑"),tr("输入内容"),QLineEdit::Normal,"",&isOK);
+    if(!isOK)
+        return;
+
+    QList<QTableWidgetItem *>selects = ui->tableWidget->selectedItems();
+
+    for(int i=0;i<selects.count();i++)
+    {
+        selects.value(i)->setText(input);
+    }
+}
+
+void MainWindow::on_action_addrow_triggered()
+{
+    if (ui->tableWidget->columnCount()==0)
+        return;
+
+    int cur_row=ui->tableWidget->currentRow()+1;
+    ui->tableWidget->insertRow(cur_row);
+
+    QTableWidgetItem *tmp1;
+
+    tmp1=new QTableWidgetItem("0");
+    tmp1->setTextAlignment(Qt::AlignRight);
+    ui->tableWidget->setItem(cur_row,0,tmp1);
+    for(int j=0;j<biaotou.lieshu;j++)
+    {
+        if (liexinxi.lieleixing.value(j)==1 )
+        {
+            tmp1=new QTableWidgetItem("");
+            tmp1->setTextAlignment(Qt::AlignLeft);
+            ui->tableWidget->setItem(cur_row,j+1,tmp1);
+        }
+        else
+        {
+            tmp1=new QTableWidgetItem("0");
+            tmp1->setTextAlignment(Qt::AlignRight);
+            ui->tableWidget->setItem(cur_row,j+1,tmp1);
+
+        }
+    }
+
+    biaotou.hangshu=ui->tableWidget->rowCount();
+
+    QString filename=QFileInfo(fileNameOpenedDir).fileName();
+    label1->setText(filename+tr("     ")+QString::number(biaotou.hangshu)+tr("x")+QString::number(biaotou.lieshu)+tr("   "));
+
+}
+
+
+void MainWindow::on_action_deleterow_triggered()
+{
+    if (ui->tableWidget->columnCount()==0)
+        return;
+
+    QList<QTableWidgetItem *>selects = ui->tableWidget->selectedItems();
+
+    QVector<int> tmp1;
+
+    for(int i=0;i<selects.count();i++)
+    {
+        if(!tmp1.contains(selects.value(i)->row()))
+            tmp1.append(selects.value(i)->row());
+    }
+
+    int tmp1_count=tmp1.count();
+    int tmp1_tmp;
+    for(int i=0;i<tmp1_count;i++)
+        for(int j=0;j<tmp1_count-i-1;j++)
+            if(tmp1.value(j)<tmp1.value(j+1))
+            {
+                tmp1_tmp=tmp1.value(j);
+                tmp1.replace(j,tmp1.value(j+1));
+                tmp1.replace(j+1,tmp1_tmp);
+            }
+
+    for(int i=0;i<tmp1.count();i++)
+    {
+        ui->tableWidget->removeRow(tmp1.value(i));
+    }
+
+    biaotou.hangshu=ui->tableWidget->rowCount();
+    QString filename=QFileInfo(fileNameOpenedDir).fileName();
+    label1->setText(filename+tr("     ")+QString::number(biaotou.hangshu)+tr("x")+QString::number(biaotou.lieshu)+tr("   "));
+}
+
+void MainWindow::on_action_addcolumn_triggered()
+{
+    if (ui->tableWidget->columnCount()==0)
+        return;
+
+    bool isOK;
+    QString liebiaoti1=QInputDialog::getText(NULL,tr("添加列"),tr("输入列标题"),QLineEdit::Normal,"",&isOK);
+    if(!isOK)
+        return;
+
+    qint16 liebiaotizishu1=liebiaoti1.length();
+
+    qint8 lieleixing1=QInputDialog::getText(NULL,tr("添加列"),tr("输入列类型（01-05）"),QLineEdit::Normal,"",&isOK).toInt();
+    if(!isOK)
+        return;
+
+    int cur_col=ui->tableWidget->currentColumn()+1;
+    ui->tableWidget->insertColumn(cur_col);
+
+    liexinxi.liebiaoti.insert(cur_col-1,liebiaoti1);
+    liexinxi.liebiaotizishu.insert(cur_col-1,liebiaotizishu1);
+    liexinxi.lieleixing.insert(cur_col-1,lieleixing1);
+
+    QTableWidgetItem *tmp1;
+
+    ui->tableWidget->setHorizontalHeaderItem(cur_col,new QTableWidgetItem(liebiaoti1));
+
+    int hangshu1=biaotou.hangshu;
+
+        if (lieleixing1==1 )
+        {
+            for(int j=0;j<hangshu1;j++)
+            {
+            tmp1=new QTableWidgetItem("");
+            tmp1->setTextAlignment(Qt::AlignLeft);
+            ui->tableWidget->setItem(j,cur_col,tmp1);
+            }
+        }
+        else if (lieleixing1==2 )
+        {
+            for(int j=0;j<hangshu1;j++)
+            {
+            tmp1=new QTableWidgetItem("0");
+            tmp1->setTextAlignment(Qt::AlignRight);
+            ui->tableWidget->setItem(j,cur_col,tmp1);
+            }
+
+        }
+
+    biaotou.lieshu=ui->tableWidget->columnCount()-1;
+
+    QString filename=QFileInfo(fileNameOpenedDir).fileName();
+    label1->setText(filename+tr("     ")+QString::number(biaotou.hangshu)+tr("x")+QString::number(biaotou.lieshu)+tr("   "));
+
+}
+
+void MainWindow::on_action_deletecolumn_triggered()
+{
+    if (ui->tableWidget->columnCount()==0)
+        return;
+
+    QList<QTableWidgetItem *>selects = ui->tableWidget->selectedItems();
+
+    QVector<int> tmp1;
+
+
+    for(int i=0;i<selects.count();i++)
+    {
+        if(!tmp1.contains(selects.value(i)->column()))
+            tmp1.append(selects.value(i)->column());
+    }
+
+    int tmp1_count=tmp1.count();
+    int tmp1_tmp;
+    for(int i=0;i<tmp1_count;i++)
+        for(int j=0;j<tmp1_count-i-1;j++)
+            if(tmp1.value(j)<tmp1.value(j+1))
+            {
+                tmp1_tmp=tmp1.value(j);
+                tmp1.replace(j,tmp1.value(j+1));
+                tmp1.replace(j+1,tmp1_tmp);
+            }
+
+    for(int i=0;i<tmp1.count();i++)
+    {
+        ui->tableWidget->removeColumn(tmp1.value(i));
+        liexinxi.liebiaoti.remove(tmp1.value(i)-1);
+        liexinxi.liebiaotizishu.remove(tmp1.value(i)-1);
+        liexinxi.lieleixing.remove(tmp1.value(i)-1);
+    }
+
+    biaotou.lieshu=ui->tableWidget->columnCount()-1;
+    QString filename=QFileInfo(fileNameOpenedDir).fileName();
+    label1->setText(filename+tr("     ")+QString::number(biaotou.hangshu)+tr("x")+QString::number(biaotou.lieshu)+tr("   "));
+
+}
+
+

@@ -8,6 +8,7 @@
 #include <QFileDialog>
 #include <QLabel>
 #include <QMessageBox>
+#include <QInputDialog>
 #include <QDomDocument>
 #include <QXmlStreamReader>
 #include <iostream>
@@ -97,14 +98,24 @@ private slots:
 
     void on_action_6_triggered();
 
-    void on_pushButton_7_clicked();
-
-    void on_pushButton_8_clicked();
-
     void on_lineEdit_returnPressed();
+
+    void show_contextmenu();
+
+    void on_action_edit_triggered();
+
+    void on_action_addrow_triggered();
+
+    void on_action_deleterow_triggered();
+
+    void on_action_addcolumn_triggered();
+
+    void on_action_deletecolumn_triggered();
 
 private:
     Ui::MainWindow *ui;
+
+    QMenu * cmenu;
 
     QString fileNameOpenedDir;
 
