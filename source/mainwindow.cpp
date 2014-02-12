@@ -379,10 +379,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     ui->tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+    ui->tableWidget->horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
+    ui->tableWidget->verticalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
 
     cmenu = new QMenu(this->ui->tableWidget);
+    cmenuh = new QMenu(this->ui->tableWidget->horizontalHeader());
+    cmenuv = new QMenu(this->ui->tableWidget->verticalHeader());
 
     connect(ui->tableWidget,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(show_contextmenu()));
+    connect(ui->tableWidget->horizontalHeader(),SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(show_contextmenuh()));
+    connect(ui->tableWidget->verticalHeader(),SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(show_contextmenuv()));
 
     QAction *action_edit= cmenu->addAction(tr("编辑"));
     cmenu->addSeparator();
@@ -392,11 +398,23 @@ MainWindow::MainWindow(QWidget *parent) :
     QAction *action_addcolumn= cmenu->addAction(tr("添加列"));
     QAction *action_deletecolumn= cmenu->addAction(tr("删除列"));
 
+    QAction *action_addrowv=cmenuv->addAction(tr("添加行"));
+    QAction *action_deleterowv= cmenuv->addAction(tr("删除行"));
+
+    QAction *action_addcolumnh= cmenuh->addAction(tr("添加列"));
+    QAction *action_deletecolumnh= cmenuh->addAction(tr("删除列"));
+
     connect(action_edit,SIGNAL(triggered(bool)),this,SLOT(on_action_edit_triggered()));
     connect(action_addrow,SIGNAL(triggered(bool)),this,SLOT(on_action_addrow_triggered()));
     connect(action_deleterow,SIGNAL(triggered(bool)),this,SLOT(on_action_deleterow_triggered()));
     connect(action_addcolumn,SIGNAL(triggered(bool)),this,SLOT(on_action_addcolumn_triggered()));
     connect(action_deletecolumn,SIGNAL(triggered(bool)),this,SLOT(on_action_deletecolumn_triggered()));
+
+    connect(action_addrowv,SIGNAL(triggered(bool)),this,SLOT(on_action_addrow_triggered()));
+    connect(action_deleterowv,SIGNAL(triggered(bool)),this,SLOT(on_action_deleterow_triggered()));
+
+    connect(action_addcolumnh,SIGNAL(triggered(bool)),this,SLOT(on_action_addcolumn_triggered()));
+    connect(action_deletecolumnh,SIGNAL(triggered(bool)),this,SLOT(on_action_deletecolumn_triggered()));
 
     label1 = new QLabel;
     statusBar()->addPermanentWidget(label1);
@@ -720,6 +738,20 @@ void MainWindow::show_contextmenu()
     if(cmenu)
      {
          cmenu->exec(QCursor::pos());
+     }
+}
+void MainWindow::show_contextmenuh()
+{
+    if(cmenuh)
+     {
+         cmenuh->exec(QCursor::pos());
+     }
+}
+void MainWindow::show_contextmenuv()
+{
+    if(cmenuv)
+     {
+         cmenuv->exec(QCursor::pos());
      }
 }
 

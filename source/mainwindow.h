@@ -102,6 +102,10 @@ private slots:
 
     void show_contextmenu();
 
+    void show_contextmenuh();
+
+    void show_contextmenuv();
+
     void on_action_edit_triggered();
 
     void on_action_addrow_triggered();
@@ -116,6 +120,10 @@ private:
     Ui::MainWindow *ui;
 
     QMenu * cmenu;
+
+    QMenu * cmenuh;
+
+    QMenu * cmenuv;
 
     QString fileNameOpenedDir;
 
